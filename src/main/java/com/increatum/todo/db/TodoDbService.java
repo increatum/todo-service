@@ -61,7 +61,7 @@ public class TodoDbService {
  * 
  * @param todoId
  * @param todo
- * @return boolean id resource was updated
+ * @return boolean if resource was updated
  * TODO do not change id, 
  *      first, it is not quite REST semantic
  *      second there are bugs(?) in sqlite(?)
