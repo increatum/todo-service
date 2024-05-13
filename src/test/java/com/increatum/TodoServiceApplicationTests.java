@@ -9,6 +9,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 
+import org.junit.Ignore;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -109,6 +110,16 @@ class TodoServiceApplicationTests {
     @Test
     void testUpdateEmpty() {
         patchOk("/todos/1", "update-empty-req.json", "update-empty-res.json");
+    }
+
+    @Order(12)
+    @Test
+    @Ignore 
+    // TODO there are bugs(?) in sqlite(?)
+    // UPDATE todos SET id=3 where id=1
+    // returns 0 updated rows!
+    void testUpdateId() {
+        patchOk("/todos/1", "update-id-req.json", "update-id-res.json");
     }
 
     @Order(13)

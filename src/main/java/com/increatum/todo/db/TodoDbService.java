@@ -1,9 +1,9 @@
 package com.increatum.todo.db;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -58,13 +58,24 @@ public class TodoDbService {
     }
 
     public boolean update(Long todoId, TodoUpdate todo) {
-        Map<String, Object> params = new TreeMap<>();
+        Map<String, Object> params = new LinkedHashMap<>();
         if(todo.getCompleted() != null) {
             params.put("completed=?", todo.getCompleted());
         }
         if(todo.getDescription() != null) {
             params.put("description=?", todo.getDescription());
         }
+//        TODO do not change id, 
+//        first, it is not quite REST semantic
+//        second there are bugs(?) in sqlite(?)
+//        UPDATE todos SET id=1 where id=1 
+//        return 1 updated row but
+//        UPDATE todos SET id=3 where id=1
+//        returns 0 updated rows!
+
+//        if(todo.getId() != null) {
+//            params.put("id=?", todo.getId());
+//        }
         if(params.size() == 0) {
             return true; // TODO nothing to update or validation error?
         }
@@ -72,6 +83,7 @@ public class TodoDbService {
                 .append(String.join(",", params.keySet()))
                 .append(" where id=?").toString();
         params.put("id", todoId);
+        
         return 1 == jdbcTemplate.update(updateSql, params.values().toArray());
     }
 

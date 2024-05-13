@@ -131,6 +131,11 @@ components:
         required:
         - id
         - description
+      properties:
+        completed:
+          description: indicates if a taks is completed or not
+          type: boolean
+          default: false
     TodoUpdate:
       description: Object representing a Todo
       type: object
@@ -138,7 +143,6 @@ components:
         completed:
           description: indicates if a taks is completed or not
           type: boolean
-          default: false
         description:
           description: description of the todo
           type: string
