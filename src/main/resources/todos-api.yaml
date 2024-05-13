@@ -44,7 +44,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Todo'
       responses:
-        200:
+        201:
           description: The created todo
           content:
             application/json:
@@ -84,7 +84,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-    put:
+    patch:
       tags:
       - todo
       summary: Update an existing todo
@@ -93,7 +93,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Todo'
+              $ref: '#/components/schemas/TodoUpdate'
       responses:
         200:
           description: The updated todo
@@ -125,9 +125,14 @@ components:
   schemas:
     Todo:
       description: Object representing a Todo
-      required:
-      - id
-      - description
+      allOf:
+      - $ref: '#/components/schemas/TodoUpdate'
+      - type: object
+        required:
+        - id
+        - description
+    TodoUpdate:
+      description: Object representing a Todo
       type: object
       properties:
         completed:
@@ -143,17 +148,23 @@ components:
           format: int64
           type: integer
           example: "1"
-          readOnly: true
     Error:
       description: Object representing an error
       type: object
       properties:
-        code:
+        timestamp:
+           type: string
+           format: date-time
+        status:
           format: int32
           description: Error code that identify of the error
           type: integer
           example: "1000"
-        message:
+        error:
           description: Short description of the error
           type: string
           example: Could not perform the todos
+        path:
+          description: request path
+          type: string
+          example: /todos/1

@@ -23,7 +23,7 @@ import com.increatum.test.JsonUtil;
 import com.increatum.todo.TodoServiceApplication;
 import com.increatum.todo.db.TodoDbService;
 
-@SpringBootTest(classes = {TodoServiceApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = {TodoServiceApplication.class, FixedClockConfig.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class TodoServiceApplicationTests {
 
@@ -35,7 +35,6 @@ class TodoServiceApplicationTests {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
 
     private static final String ALL_TESTS = "/all-tests/";
 
@@ -61,7 +60,7 @@ class TodoServiceApplicationTests {
     @Order(4)
     @Test
     void testCreate() {
-        postOk("/todos", "create-req.json", "create-res.json");
+        post("/todos", "create-req.json", "create-res.json", 201);
     }
 
     @Order(5)
@@ -70,10 +69,16 @@ class TodoServiceApplicationTests {
         post("/todos", "create-req.json", "duplicate-res.json", 400);
     }
 
+    @Order(4)
+    @Test
+    void testCreateError() {
+        post("/todos", "create-error-req.json", "create-error-res.json", 400);
+    }
+
     @Order(6)
     @Test
     void testCreateOther() {
-        postOk("/todos", "create-second-req.json", "create-second-res.json");
+        post("/todos", "create-second-req.json", "create-second-res.json", 201);
     }
 
     @Order(7)
@@ -85,22 +90,40 @@ class TodoServiceApplicationTests {
     @Order(8)
     @Test
     void testUpdate() {
-        putOk("/todos/1", "update-req.json", "update-res.json");
+        patchOk("/todos/1", "update-req.json", "update-res.json");
     }
 
     @Order(9)
+    @Test
+    void testUpdateStatus() {
+        patchOk("/todos/1", "update-status-req.json", "update-status-res.json");
+    }
+
+    @Order(10)
+    @Test
+    void testUpdateDone() {
+        patchOk("/todos/1", "update-desc-req.json", "update-desc-res.json");
+    }
+
+    @Order(11)
+    @Test
+    void testUpdateEmpty() {
+        patchOk("/todos/1", "update-empty-req.json", "update-empty-res.json");
+    }
+
+    @Order(12)
     @Test
     void testGet() {
         getOk("/todos/1", "get-updated-res.json");
     }
 
-    @Order(10)
+    @Order(13)
     @Test
     void testDelete() {
         delete("/todos/2", 204);
     }
 
-    @Order(11)
+    @Order(14)
     @Test
     void testDeleteNotFound() {
         delete("/todos/2", 404);
@@ -116,12 +139,8 @@ class TodoServiceApplicationTests {
         verifyOk(jsonRequest(path).build(), res);
     }
 
-    void putOk(String path, String req, String res) {
-        put(path, req, res, 200);
-    }
-
-    void postOk(String path, String req, String res) {
-        post(path, req, res, 200);
+    void patchOk(String path, String req, String res) {
+        patch(path, req, res, 200);
     }
 
     void post(String path, String req, String res, int code) {
@@ -131,9 +150,9 @@ class TodoServiceApplicationTests {
         verify(request, res, code);
     }
 
-    void put(String path, String req, String res, int code) {
+    void patch(String path, String req, String res, int code) {
         HttpRequest request = jsonRequest(path)
-                .PUT(BodyPublishers.ofString(JsonUtil.read(ALL_TESTS + req)))
+                .method("PATCH", BodyPublishers.ofString(JsonUtil.read(ALL_TESTS + req)))
                 .build();
         verify(request, res, code);
     }
@@ -150,8 +169,8 @@ class TodoServiceApplicationTests {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            AssertJson.assertData(JsonUtil.prettyPrint(response.body()), ALL_TESTS + res);
             assertEquals(code, response.statusCode());
+            AssertJson.assertData(JsonUtil.prettyPrint(response.body()), ALL_TESTS + res);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

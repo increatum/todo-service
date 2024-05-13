@@ -1,7 +1,9 @@
 package com.increatum.todo.db;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -10,6 +12,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
 import com.increatum.todo.model.Todo;
+import com.increatum.todo.model.TodoUpdate;
 
 import jakarta.annotation.PostConstruct;
 
@@ -54,9 +57,22 @@ public class TodoDbService {
                 todo.getDescription(), todo.getCompleted());
     }
 
-    public boolean update(Todo todo) {
-        return 1 == jdbcTemplate.update("UPDATE todos SET description=?, completed=? where id=?", todo.getDescription(),
-                todo.getCompleted(), todo.getId());
+    public boolean update(Long todoId, TodoUpdate todo) {
+        Map<String, Object> params = new TreeMap<>();
+        if(todo.getCompleted() != null) {
+            params.put("completed=?", todo.getCompleted());
+        }
+        if(todo.getDescription() != null) {
+            params.put("description=?", todo.getDescription());
+        }
+        if(params.size() == 0) {
+            return true; // TODO nothing to update or validation error?
+        }
+        String updateSql = new StringBuilder("UPDATE todos SET ")
+                .append(String.join(",", params.keySet()))
+                .append(" where id=?").toString();
+        params.put("id", todoId);
+        return 1 == jdbcTemplate.update(updateSql, params.values().toArray());
     }
 
 }

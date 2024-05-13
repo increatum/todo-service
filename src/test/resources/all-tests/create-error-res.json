@@ -1,0 +1,6 @@
+{
+  "timestamp" : "2024-05-12T23:00:00Z",
+  "status" : 400,
+  "error" : "Validation failed for argument [0] in public default org.springframework.http.ResponseEntity<com.increatum.todo.model.Todo> com.increatum.todo.api.TodosApi._todoCreate(com.increatum.todo.model.Todo) with 2 errors: [Field error in object 'todo' on field 'id': rejected value [null]; codes [NotNull.todo.id,NotNull.id,NotNull.java.lang.Long,NotNull]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [todo.id,id]; arguments []; default message [id]]; default message [must not be null]] [Field error in object 'todo' on field 'description': rejected value [null]; codes [NotNull.todo.description,NotNull.description,NotNull.java.lang.String,NotNull]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [todo.description,description]; arguments []; default message [description]]; default message [must not be null]] ",
+  "path" : "/todos"
+}
