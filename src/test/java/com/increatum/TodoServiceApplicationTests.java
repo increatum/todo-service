@@ -69,61 +69,61 @@ class TodoServiceApplicationTests {
         post("/todos", "create-req.json", "duplicate-res.json", 400);
     }
 
-    @Order(4)
+    @Order(6)
     @Test
     void testCreateError() {
         post("/todos", "create-error-req.json", "create-error-res.json", 400);
     }
 
-    @Order(6)
+    @Order(7)
     @Test
     void testCreateOther() {
         post("/todos", "create-second-req.json", "create-second-res.json", 201);
     }
 
-    @Order(7)
+    @Order(8)
     @Test
     void testGetAll() {
         getOk("/todos", "all-two-res.json");
     }
 
-    @Order(8)
+    @Order(9)
     @Test
     void testUpdate() {
         patchOk("/todos/1", "update-req.json", "update-res.json");
     }
 
-    @Order(9)
+    @Order(10)
     @Test
     void testUpdateStatus() {
         patchOk("/todos/1", "update-status-req.json", "update-status-res.json");
     }
 
-    @Order(10)
+    @Order(11)
     @Test
     void testUpdateDone() {
         patchOk("/todos/1", "update-desc-req.json", "update-desc-res.json");
     }
 
-    @Order(11)
+    @Order(12)
     @Test
     void testUpdateEmpty() {
         patchOk("/todos/1", "update-empty-req.json", "update-empty-res.json");
     }
 
-    @Order(12)
+    @Order(13)
     @Test
     void testGet() {
         getOk("/todos/1", "get-updated-res.json");
     }
 
-    @Order(13)
+    @Order(14)
     @Test
     void testDelete() {
         delete("/todos/2", 204);
     }
 
-    @Order(14)
+    @Order(15)
     @Test
     void testDeleteNotFound() {
         delete("/todos/2", 404);
