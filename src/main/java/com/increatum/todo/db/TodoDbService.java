@@ -57,6 +57,19 @@ public class TodoDbService {
                 todo.getDescription(), todo.getCompleted());
     }
 
+/**
+ * 
+ * @param todoId
+ * @param todo
+ * @return boolean id resource was updated
+ * TODO do not change id, 
+ *      first, it is not quite REST semantic
+ *      second there are bugs(?) in sqlite(?)
+ *      UPDATE todos SET id=1 where id=1 
+ *      return 1 updated row but
+ *      UPDATE todos SET id=3 where id=1
+ *      returns 0 updated rows!
+ */
     public boolean update(Long todoId, TodoUpdate todo) {
         Map<String, Object> params = new LinkedHashMap<>();
         if(todo.getCompleted() != null) {
@@ -65,13 +78,6 @@ public class TodoDbService {
         if(todo.getDescription() != null) {
             params.put("description=?", todo.getDescription());
         }
-//        TODO do not change id, 
-//        first, it is not quite REST semantic
-//        second there are bugs(?) in sqlite(?)
-//        UPDATE todos SET id=1 where id=1 
-//        return 1 updated row but
-//        UPDATE todos SET id=3 where id=1
-//        returns 0 updated rows!
 
 //        if(todo.getId() != null) {
 //            params.put("id=?", todo.getId());
