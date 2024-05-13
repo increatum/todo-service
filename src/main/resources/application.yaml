@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: todo-service
+  datasource:
+    url: 'jdbc:sqlite:todos.db'
+    driver-class-name: 'org.sqlite.JDBC'
+logging:
+  level:
+    org.zalando.logbook: TRACE
+logbook:
+  predicate:
+    include:
+      - path: /**
+  format.style: curl
+  strategy: body-only-if-status-at-least
+  minimum-status: 400

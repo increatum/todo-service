@@ -1,0 +1,4 @@
+{
+  "code" : -1,
+  "message" : "PreparedStatementCallback; uncategorized SQLException for SQL [INSERT INTO todos(id, description, completed) values(?, ?, ?)]; SQL state [null]; error code [19]; [SQLITE_CONSTRAINT_PRIMARYKEY] A PRIMARY KEY constraint failed (UNIQUE constraint failed: todos.id)"
+}

@@ -1,0 +1,159 @@
+openapi: 3.0.1
+info:
+  title: A TODO-Todo list application
+  description: A simple application to handle todos.
+  version: 1.0.0
+  license:
+    name: Eclipse Public License 2.0
+    url: 'https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html'
+servers:
+  - url: 'http://localhost:8080/'
+tags:
+- name: todos
+  description: Todo management
+paths:
+  /todos:
+    get:
+      tags:
+      - todos
+      summary: Get the list of all todos
+      operationId: todosGetAll
+      responses:
+        200:
+          description: List of all todos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Todo'
+        default:
+          description: Generic error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+      - todo
+      summary: Create a new todo
+      operationId: todoCreate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Todo'
+      responses:
+        200:
+          description: The created todo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        default:
+          description: Generic error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /todos/{todoId}:
+    parameters:
+      - name: todoId
+        in: path
+        description: The id of the todo
+        required: true
+        schema:
+          format: int64
+          type: integer
+        example: 1
+    get:
+      tags:
+      - todo
+      summary: Get a single todo based on its id
+      operationId: todoRead
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        default:
+          description: Generic error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+      - todo
+      summary: Update an existing todo
+      operationId: todoUpdate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Todo'
+      responses:
+        200:
+          description: The updated todo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        default:
+          description: Generic error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+      - todo
+      summary: Delete an existing todo
+      operationId: todoDelete
+      responses:
+        204:
+          description: Todo deleted response
+        default:
+          description: Generic error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Todo:
+      description: Object representing a Todo
+      required:
+      - id
+      - description
+      type: object
+      properties:
+        completed:
+          description: indicates if a taks is completed or not
+          type: boolean
+          default: false
+        description:
+          description: description of the todo
+          type: string
+          example: My important todo
+        id:
+          description: id of the todo
+          format: int64
+          type: integer
+          example: "1"
+          readOnly: true
+    Error:
+      description: Object representing an error
+      type: object
+      properties:
+        code:
+          format: int32
+          description: Error code that identify of the error
+          type: integer
+          example: "1000"
+        message:
+          description: Short description of the error
+          type: string
+          example: Could not perform the todos
